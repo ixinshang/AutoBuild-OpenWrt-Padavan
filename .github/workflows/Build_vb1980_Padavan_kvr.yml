@@ -33,7 +33,15 @@ on:
       plugins:
         description: 'json format string of include configs'
         required: true
-        default: '{"vpnsvr":"y","vpncli":"y","vpncmd":"n","ss":"y","v2ray":"n","xray":"y","trojan":"y","ssobfs":"y","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"y","zerotier":"n","ddnsto":"n","wireguard":"n","frpc":"y","aldriver":"y","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
+        default: '{"cpu_overclock":"n","vpnsvr":"y","vpncli":"y","vpncmd":"n","ss":"y","v2ray":"n","xray":"y","trojan":"y","ssobfs":"y","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"y","zerotier":"n","ddnsto":"n","wireguard":"n","frpc":"y","aldriver":"y","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
+      cpu_set:
+        type: choice
+        description: '1000Mhz=0x312 1100Mhz=0x362 1120Mhz=0x372 1200Mhz=0x3B2'
+        options:
+        - '0x312'
+        - '0x362'
+        - '0x372'
+        - '0x3B2'
       firmwarever:
         description: 'firmware''s version'
         required: true
@@ -258,6 +266,9 @@ jobs:
         echo "CONFIG_FIRMWARE_INCLUDE_DOGCOM=${{env.dogcom}}" >> .config
         echo "CONFIG_FIRMWARE_INCLUDE_NAPT66=n" >> .config
         #校园网相关结束
+        #CPU超频
+        echo "CONFIG_FIRMWARE_INCLUDE_OC=${{env.cpu_overclock}}" >> .config #CPU超频开关
+        echo 'CONFIG_FIRMWARE_MT7621_OC="${{ github.event.inputs.cpu_set}}"' >> .config #此处填写对应频率的十六进制：1000Mhz=0x312 1100Mhz=0x362 1120Mhz=0x372 1200Mhz=0x3B2
         #########################################################################################
         #自定义添加其它功能请参考源码configs/templates/目录下的config文件。按照上面的格式添加即可
         #格式如下：
