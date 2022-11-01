@@ -202,7 +202,7 @@ jobs:
         echo "CONFIG_FIRMWARE_INCLUDE_DOGCOM=${{env.dogcom}}" >> .config
         #校园网相关结束
         #CPU超频
-        if: ${{env.cpu_overclock}}== 'y'
+        if: ${{env.cpu_overclock}}== y
         with:
           echo "CONFIG_FIRMWARE_INCLUDE_OC=${{env.cpu_overclock}}" >> .config #CPU超频开关
           echo 'CONFIG_FIRMWARE_MT7621_OC="${{ github.event.inputs.cpu_set}}"' >> .config #此处填写对应频率的十六进制：1000Mhz=0x312 1100Mhz=0x362 1120Mhz=0x372 1200Mhz=0x3B2
