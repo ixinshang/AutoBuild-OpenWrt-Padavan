@@ -33,7 +33,7 @@ on:
       plugins:
         description: 'json format string of include configs'
         required: true
-        default: '{"cpu_overclock":"n","vpnsvr":"y","vpncli":"y","vpncmd":"n","ss":"y","v2ray":"n","xray":"y","trojan":"y","ssobfs":"y","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"y","zerotier":"n","ddnsto":"n","wireguard":"n","frpc":"y","aldriver":"y","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
+        default: '{"cpu_overclock":"n","aria":"y","transmission":"y","vpnsvr":"y","vpncli":"y","vpncmd":"n","ss":"y","v2ray":"n","xray":"y","trojan":"y","ssobfs":"y","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"y","zerotier":"n","ddnsto":"n","wireguard":"n","frpc":"y","aldriver":"y","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
       cpu_set:
         type: choice
         description: '1000Mhz=0x312 1100Mhz=0x362 1120Mhz=0x372 1200Mhz=0x3B2'
@@ -45,7 +45,7 @@ on:
       firmwarever:
         description: 'firmware''s version'
         required: true
-        default: '20221026'
+        default: '20221108'
       busyboxver:
         type: choice
         description: 'busybox''s version'
@@ -146,6 +146,9 @@ jobs:
         #sed -i "s#https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome#https://cdn.jsdelivr.net/gh/${{ github.repository_owner }}/Padavan_CI/adg/AdGuardHome#g" ./adguardhome.sh
     - name: Parse json string of include plugins
       run: |
+        echo "cpu_overclock=${{fromJson(github.event.inputs.plugins).cpu_overclock}}" >> $GITHUB_ENV
+        echo "aria=${{fromJson(github.event.inputs.plugins).aria}}" >> $GITHUB_ENV
+        echo "transmission=${{fromJson(github.event.inputs.plugins).transmission}}" >> $GITHUB_ENV
         echo "vpnsvr=${{fromJson(github.event.inputs.plugins).vpnsvr}}" >> $GITHUB_ENV
         echo "vpncli=${{fromJson(github.event.inputs.plugins).vpncli}}" >> $GITHUB_ENV
         echo "vpncmd=${{fromJson(github.event.inputs.plugins).vpncmd}}" >> $GITHUB_ENV
@@ -203,6 +206,11 @@ jobs:
         sed -i '/CONFIG_FIRMWARE_INCLUDE_KUMASOCKS/d' .config
         sed -i '/CONFIG_FIRMWARE_INCLUDE_IPT2SOCKS/d' .config
         sed -i '/CONFIG_FIRMWARE_INCLUDE_MICROSOCKS/d' .config
+        #下载功能
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_ARIA/d' .config #删除配置项aria
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_ARIA_WEB_CONTROL/d' .config #删除配置项aria网页控制台
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION/d' .config #删除配置项TRANSMISSION
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_TRANSMISSION_WEB_CONTROL/d' .config #删除配置项TRANSMISSION网页控制台
         #校园网相关开始
         sed -i '/CONFIG_FIRMWARE_INCLUDE_MENTOHUST/d' .config #删除配置项MENTOHUST
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT/d' .config #删除配置项SCUTCLIENT
@@ -258,6 +266,11 @@ jobs:
         #
         echo "CONFIG_FIRMWARE_INCLUDE_WYY=n" >> .config #网易云解锁
         echo "CONFIG_FIRMWARE_INCLUDE_WYYBIN=n" >> .config #网易云解锁GO版本执行文件（4M多）注意固件超大小,不集成会自动下载
+        #下载功能
+        echo "CONFIG_FIRMWARE_INCLUDE_ARIA=${{env.aria}}" >> .config #配置项aria
+        echo "CONFIG_FIRMWARE_INCLUDE_ARIA_WEB_CONTROL=${{env.aria}}" >> .config #配置项aria网页控制台
+        echo "CONFIG_FIRMWARE_INCLUDE_TRANSMISSION=${{env.transmission}}" >> .config #删除配置项TRANSMISSION
+        echo "CONFIG_FIRMWARE_INCLUDE_TRANSMISSION_WEB_CONTROL=${{env.transmission}}" >> .config #配置项TRANSMISSION网页控制台
         #校园网相关开始
         echo "CONFIG_FIRMWARE_INCLUDE_MENTOHUST=${{env.mentohust}}" >> .config #MENTOHUST
         echo "CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT=${{env.scutclient}}" >> .config #SCUTCLIENT
